@@ -1,0 +1,86 @@
+/* Adicione estilos personalizados para a barra de navegação transparente */
+.navbar {
+    background-color: transparent !important;
+  }
+
+  .navbar-brand {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  .navbar-brand img {
+    max-width: 80%;
+    height: auto;
+    margin-top: -10px; /* Ajuste para alinhar a logo verticalmente no meio */
+  }
+
+
+body {
+    padding: 20px;
+    text-align: center;
+    background-color: #bd00d6; /* Cor de fundo roxa */
+    color: white; /* Cor do texto */
+  }
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .menu-item {
+    margin-left: 20px;
+    color: white; /* Cor do texto do item do menu */
+    text-decoration: none;
+    transition: color 0.3s; /* Efeito de transição na cor do texto */
+  }
+
+  .menu-item:hover {
+    color: yellow; /* Cor do texto do item do menu ao passar o mouse (hover) */
+    text-decoration: none;
+  }
+
+  canvas {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #000;
+  }
+
+  .download-btn {
+    margin-top: 20px;
+    align-items: center;
+    background-color: #9400a7 !important;
+    border: #fff solid 2px;
+    color: #fff;
+  }
+  .download-btn:hover {
+    margin-top: 20px;
+    align-items: center;
+    background-color: #6a0178 !important;
+    border: #fff solid 2px;
+    color: #fff;
+  }
+
+  .btn-cortar{
+    background-color: #FE00E0 !important;
+    border: #fff solid 2px;
+    color: #fff;
+  }
+  .btn-cortar:hover{
+    background-color: #ffffff !important;
+    border: #ffffff solid 2px;
+    color: #FE00E0;
+  }
+  /* Ajustes para aproximar mais as imagens */
+  .col-md-3 {
+    flex: 0 0 30%; /* Largura da coluna */
+  }
+  /* Estilo personalizado para o input file */
+  
