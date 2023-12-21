@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corte de Imagem</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <!-- Logo no meio -->
+      <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="Logo">
+      </a>
+      <!-- Botão de alternância para telas menores 
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      Itens de navegação
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Cortar imagem <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Conheça os templates Canva</a>
+          </li>
+        </ul>
+      </div>-->
+    </div>
+  </nav>
+  <div class="container mx-auto mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <label>Selecione a imagem que deseja cortar:</label>
+        <br>
+        <input type="file" id="imageInput" accept="image/*" class="mb-3">
+        <br>
+        <label for="slices" class="mb-3">Número de Páginas do carrossel:</label>
+        <input type="number" id="slices" min="1" value="4" class="mb-2">
+        <br>
+        <button class="btn btn-cortar col-md-6" onclick="sliceImage()">Cortar Imagem</button>
+      </div>
+    </div>
+    <br>
+    
+
+    <div class="row" id="outputContainer"></div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-lg download-btn col-md-6" id="downloadAllBtn" onclick="downloadAll()" disabled data-toggle="tooltip" data-placement="right" title="Para ativar o botão é necessário cortar a imagem">Baixar todas as imagens (ZIP)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script>
+    function sliceImage() {
+      const input = document.getElementById('imageInput');
+      const slices = parseInt(document.getElementById('slices').value);
+      const outputContainer = document.getElementById('outputContainer');
+      const downloadAllBtn = document.getElementById('downloadAllBtn');
+
+      const image = new Image();
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        image.onload = function() {
+          outputContainer.innerHTML = ''; // Limpar container
+
+          const zip = new JSZip();
+          const sliceWidth = image.width / slices;
+
+          for (let i = 0; i < slices; i++) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const x = i * sliceWidth;
+            canvas.width = sliceWidth;
+            canvas.height = image.height;
+            ctx.drawImage(image, x, 0, sliceWidth, image.height, 0, 0, sliceWidth, image.height);
+
+            outputContainer.appendChild(createColumn(canvas));
+            // Adiciona a imagem ao ZIP
+            zip.file(`slice_${i + 1}.png`, dataURItoBlob(canvas.toDataURL()));
+          }
+
+          document.zip = zip; // Armazena o objeto ZIP globalmente
+          downloadAllBtn.disabled = false; // Habilita o botão após a criação das imagens
+        };
+
+        image.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function createColumn(canvas) {
+      const col = document.createElement('div');
+      col.className = 'col-md-3'; // Define o tamanho da coluna Bootstrap
+      col.appendChild(canvas);
+      return col;
+    }
+
+    function downloadAll() {
+      const zip = document.zip;
+      if (zip) {
+        zip.generateAsync({ type: 'blob' })
+          .then(function(content) {
+            saveAs(content, 'imagenscorte.zip'); // Utiliza a função saveAs da biblioteca FileSaver.js
+          });
+      }
+    }
+
+    function dataURItoBlob(dataURI) {
+      const byteString = atob(dataURI.split(',')[1]);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: 'image/png' });
+    }
+  </script>
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+</body>
+</html>
